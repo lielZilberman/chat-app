@@ -3,6 +3,8 @@
 a final project in communication course Ariel University
 
 *IMPORTANT NOTE : THIS CHAT RUNS LOCALLY ONLY.
+David Ehevich -212757405
+Liel Zilberman - 212480974
 
 __Running the project :__
 
