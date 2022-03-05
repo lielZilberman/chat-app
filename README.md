@@ -66,8 +66,15 @@ Features of the chat in this part (And explaining how every feature works behind
  
  PRIVATE:
  The client can send private messages by typing the name of the username in the "send to" square , if the the user does not exist the server will notify the client.
- We check on the client side if the send to is not empty , if not then we add the name of the user name to the string , and then server sends the message only to the specified username.
+ We check on the client side if the send to is not empty , if not then we add the name of the user name to the string , and then server sends the message only to the specified   username.
+ 
+ Taken User Name: 
  
  Part 2:
+
+All of this part features still work via TCP protocol except Downloading the file downloading the files is via UDP protocol.
+All of the code in both parts is identical except the donwload file function.
+
+When downloading a file we use the same method with ACK to the server and only then he starts sending data , since we created a seperate socket using UDP protocol , when a download is requested we create a seperate socket and therefore we need another thread , so we create a new thread for downloading a file with UDP, the thread of the TCP socket waites to receive the download has been finished(only when it's finished) while the UDP thread download the file.
 
 
