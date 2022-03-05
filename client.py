@@ -7,12 +7,15 @@ import tkinter.scrolledtext
 from tkinter import messagebox
 import sys
 
-# You can Disconnect by typing disconnect or just closing the GUI.
+# Explanation of how the whole system works is explained in our read me on our github repo.
+# Getting address of the user
 server = socket.gethostbyname(socket.gethostname())
-port = 5050
+port = 50000
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
 
+# This function handles data which is received from the server
+# The server sends specific strings each one is for a specific situation
 def recvMsg(text_area):
     while True:
         try:
@@ -57,9 +60,11 @@ def recvMsg(text_area):
 # While this is true we might need to be able to receive messages or write messages
 
 
+# Sends the entered message to the server
 def input_text(username, message_text, to_text):
     text = f"{message_text.get('1.0', 'end')}"
     prvMsg = f"{to_text.get('1.0', 'end')}"
+    # Send additional data to the server if it's a private message
     if len(prvMsg) > 1:
         client.send(("prvMsg" + prvMsg).encode())
     to_text.delete('1.0', 'end')
@@ -68,16 +73,20 @@ def input_text(username, message_text, to_text):
     client.send((username + ":" + " " + text).encode())
 
 
+# Function to see which users are online
+# sends a certain string to the server so the server can send the appropriate data
 def online_func():
     client.send("showUsersOnline".encode())
 
 
+# Functuion to remove the text in the text box
 def clear_func(text_area):
     text_area.config(state='normal')
     text_area.delete('1.0', 'end')
     text_area.config(state='disabled')
 
 
+# function
 def on_closing(window, username):
     client.send(("disconnectUser~" + username).encode())
     window.destroy()
@@ -85,6 +94,7 @@ def on_closing(window, username):
     sys.exit()
 
 
+# Function which handles if the download button is pressed
 def download(filename_text, saveas_text):
     fileName = f"{filename_text.get('1.0', 'end')}"
     saveAs = f"{saveas_text.get('1.0', 'end')}"
@@ -93,6 +103,7 @@ def download(filename_text, saveas_text):
     saveas_text.delete('1.0', 'end')
 
 
+# Functions which handles if a entered username is already taken.
 def is_taken(username):
     client.send("%CHECK_USERNAME%".encode())
     ack = client.recv(2048).decode()
@@ -105,6 +116,7 @@ def is_taken(username):
         return False
 
 
+# Function which if the show files button is pressed
 def showfiles():
     client.send("%SHOW_SERVER_FILES%".encode())
 
