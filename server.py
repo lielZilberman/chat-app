@@ -3,11 +3,17 @@ import socket
 import sys
 import os
 
+#########################################################################
+# IMPORTANT:
+
+# All of the explanation about the server side commands are in the read me in our github repo
+
+#########################################################################
 format = "utf-8"
 Users = {}
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 serverAddr = socket.gethostbyname(socket.gethostname())
-serverPort = 5050
+serverPort = 50000
 server.bind((serverAddr, serverPort))
 
 
@@ -31,9 +37,9 @@ def newUser(connection, addr):
         except:
             continue
     for i in Users:
-        Users[i].send(("*" + userName + " Has CONNECTED to the chat!*\n").encode())
+        Users[i].send(("" + userName + " Has CONNECTED to the chat!\n").encode())
     Users[userName] = connection
-    connection.send(("*You have been CONNECTED to the chat!*\n").encode())
+    connection.send(("You have been CONNECTED to the chat!\n").encode())
     while True:
         try:
             message = connection.recv(2048).decode()
@@ -73,7 +79,7 @@ def newUser(connection, addr):
                 discList = message.split("~")
                 Users.pop(discList[1])  # Removing from the dictionary
                 for i in Users:
-                    Users[i].send(("*" + userName + " Has DISCONNECTED from the chat!*\n").encode())
+                    Users[i].send(("" + userName + " Has DISCONNECTED from the chat!\n").encode())
                 sys.exit()  # Closing thread
             elif message == "showUsersOnline":
                 usersOnline = "showUsersOnline"
@@ -85,9 +91,17 @@ def newUser(connection, addr):
                 mone = 0
                 for i in prvUser:
                     mone += 1
+                check = False
                 prvMsg = connection.recv(2048).decode()
-                connection.send(("PRIVATE MESSAGE SENT TO " + prvUser[0:len(prvUser) - 1] + "!\n").encode())
-                Users[prvUser[0:len(prvUser) - 1]].send(("PRIVATE MESSAGE FROM " + prvMsg).encode())
+                for i in Users:
+                    if i == prvUser[0:len(prvUser) - 1]:
+                        check = True  # If the user name exist change check so we send the prv msg to the username
+                        break
+                if check:
+                    connection.send(("PRIVATE MESSAGE SENT TO " + prvUser[0:len(prvUser) - 1] + "!\n").encode())
+                    Users[prvUser[0:len(prvUser) - 1]].send(("PRIVATE MESSAGE FROM " + prvMsg).encode())
+                else:
+                    connection.send(("USER NAME DOES NOT EXIST!\n").encode())
             else:
                 for i in Users:
                     Users[i].send(message.encode())
@@ -104,4 +118,3 @@ def start():
 
 
 start()
-
